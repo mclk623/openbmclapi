@@ -133,7 +133,7 @@ export class WebdavStorage implements IStorage {
           }
         },
         {
-          concurrency: 10,
+          concurrency: 4,
         },
       )
       queue = nextQueue

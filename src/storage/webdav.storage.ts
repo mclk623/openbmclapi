@@ -5,12 +5,12 @@ import ms from 'ms'
 import {Agent} from 'node:https'
 import pMap from 'p-map'
 import {join} from 'path'
-import rangeParser from 'range-parser'
 import {createClient, type FileStat, type WebDAVClient} from 'webdav'
 import {z} from 'zod'
 import {fromZodError} from 'zod-validation-error'
 import {logger} from '../logger.js'
 import {IFileInfo, IGCCounter} from '../types.js'
+import {getSize} from '../util.js'
 import type {IStorage} from './base.storage.js'
 
 const storageConfigSchema = z.object({
@@ -26,6 +26,7 @@ export class WebdavStorage implements IStorage {
   protected readonly storageConfig: z.infer<typeof storageConfigSchema>
   protected readonly basePath: string
 
+  /** Map<hash, FileInfo> */
   protected files = new Map<string, {size: number; path: string}>()
   protected emptyFiles = new Set<string>()
 
@@ -92,10 +93,6 @@ export class WebdavStorage implements IStorage {
       await this.existsCache.set(path, true)
     }
     return exists
-  }
-
-  public getAbsolutePath(path: string): string {
-    return this.client.getFileDownloadLink(join(this.basePath, path))
   }
 
   public async getMissingFiles<T extends {path: string; hash: string; size: number}>(files: T[]): Promise<T[]> {
@@ -179,20 +176,7 @@ export class WebdavStorage implements IStorage {
     const path = join(this.basePath, hashPath)
     const file = this.client.getFileDownloadLink(path)
     res.redirect(file)
-    const size = this.getSize(this.files.get(req.params.hash)?.size ?? 0, req.headers.range)
+    const size = getSize(this.files.get(req.params.hash)?.size ?? 0, req.headers.range)
     return {bytes: size, hits: 1}
-  }
-
-  protected getSize(size: number, range?: string): number {
-    if (!range) return size
-    const ranges = rangeParser(size, range, {combine: true})
-    if (typeof ranges === 'number') {
-      return size
-    }
-    let total = 0
-    for (const range of ranges) {
-      total += range.end - range.start + 1
-    }
-    return total
   }
 }

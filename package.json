@@ -1,6 +1,6 @@
 {
   "name": "openbmclapi",
-  "version": "1.13.1",
+  "version": "1.14.0",
   "description": "bmclapi@home",
   "bin": "dist/openbmclapi.js",
   "private": true,
@@ -30,6 +30,7 @@
     "@bangbang93/utils": "^6.9.1",
     "@mongodb-js/zstd": "^1.2.0",
     "@xmcl/nat-api": "^0.4.3",
+    "ali-oss": "^6.23.0",
     "avsc": "^5.7.4",
     "bluebird": "^3.5.5",
     "cli-progress": "^3.12.0",
@@ -46,7 +47,8 @@
     "keyv": "^4.5.4",
     "keyv-file": "^0.3.0",
     "lodash-es": "^4.17.21",
-    "morgan": "^1.9.1",
+    "minio": "^8.0.5",
+    "morgan": "^1.10.1",
     "ms": "^2.1.2",
     "p-map": "^7.0.1",
     "p-retry": "^6.2.0",
@@ -64,6 +66,7 @@
   "devDependencies": {
     "@bangbang93/eslint-config-recommended": "^2.0.0",
     "@tsconfig/node18": "^18.2.2",
+    "@types/ali-oss": "^6.16.11",
     "@types/bluebird": "^3.5.27",
     "@types/cli-progress": "^3.11.5",
     "@types/dotenv": "^6.1.1",
